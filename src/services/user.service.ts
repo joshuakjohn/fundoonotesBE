@@ -1,48 +1,29 @@
 import User from '../models/user.model';
 import { IUser } from '../interfaces/user.interface';
-import { any } from '@hapi/joi';
+import bcrypt from 'bcrypt';
+
 
 class UserService {
-
-  //get all users
-  public getAllUsers = async (): Promise<IUser[]> => {
-    const data = await User.find();
-    return data;
-  };
-
   //create new user
   public newUser = async (body: IUser): Promise<IUser> => {
-    const data = await User.create(body);
-    return data;
-  };
+    const saltRounds = 10;
+    const myPassword = body.password;
 
-  //update a user
-  public updateUser = async (_id: string, body: IUser): Promise<IUser> => {
-    const data = await User.findByIdAndUpdate(
-      {
-        _id
-      },
-      body,
-      {
-        new: true
+    if(await this.emailCheck(body.email) === false){
+      try{
+        body.password = await bcrypt.hash(myPassword, saltRounds)
+      }catch(err){
+        throw new Error("Error occured in hash: "+err)
       }
-    );
-    return data;
+      const data = await User.create(body);
+      return data;
+    }
+    else{
+      throw new Error("User already exist")
+    }
   };
 
-  //delete a user
-  public deleteUser = async (_id: string): Promise<string> => {
-    await User.findByIdAndDelete(_id);
-    return '';
-  };
-
-  //get a single user
-  public getUser = async (_id: string): Promise<IUser> => {
-    const data = await User.findById(_id);
-    return data;
-  };
-
-  public emailCheck = async(elem: string) => {
+  public emailCheck = async(elem: any) => {
     const res = await User.findOne({email: elem});
     if(res){
       return true;
@@ -53,12 +34,14 @@ class UserService {
   }
 
   public userSignin = async (email: string, password: string) => {
-    const res = await User.findOne({email: email, password: password});
-    if(res){
-      return true;
+
+    const res = await User.findOne({email: email});
+    const match = await bcrypt.compare(password, res.password);
+    if(match){
+      return "Login Successfull";
     }
     else{
-      return false;
+      throw new Error("invalid email or password");
     }
   }
 

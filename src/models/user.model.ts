@@ -1,19 +1,24 @@
 import { Schema, model } from 'mongoose';
 import { IUser } from '../interfaces/user.interface';
+import { required } from '@hapi/joi';
 
 const userSchema = new Schema(
   {
     fname: {
-      type: String
+      type: String,
+      required: true
     },
     lname: {
-      type: String
+      type: String,
+      required: true
     },
     email: {
-      type: String
+      type: String,
+      required: true
     },
     password: {
-      type: String
+      type: String,
+      required: true
     }
   },
   {
