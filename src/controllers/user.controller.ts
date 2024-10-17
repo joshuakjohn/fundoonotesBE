@@ -64,15 +64,20 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<any> => {
-    try {
-      const data = await this.UserService.newUser(req.body);
-      res.status(HttpStatus.CREATED).json({
-        code: HttpStatus.CREATED,
-        data: data,
-        message: 'User created successfully'
-      });
-    } catch (error) {
-      next(error);
+    if(await this.UserService.emailCheck(req.body.email) === false){
+      try { 
+        const data = await this.UserService.newUser(req.body);
+        res.status(HttpStatus.CREATED).json({
+          code: HttpStatus.CREATED,
+          data: data,
+          message: 'User created successfully'
+        });
+      } catch (error) {
+        next(error);
+      }
+    }
+    else{
+      res.send("User already exist");
     }
   };
 
@@ -121,6 +126,15 @@ class UserController {
       next(error);
     }
   };
+
+  public signIn = async (req: Request, res:Response) => {
+    if(await this.UserService.userSignin(req.body.email, req.body.password) === true){
+      res.send("Login successful");
+    }
+    else{
+      res.send("Incorrect email or password");
+    }
+  }
 }
 
 export default UserController;

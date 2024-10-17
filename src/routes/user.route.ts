@@ -17,11 +17,9 @@ class UserRoutes {
     this.router.get('', this.UserController.getAllUsers);
 
     //route to create a new user
-    this.router.post(
-      '',
-      this.UserValidator.newUser,
-      this.UserController.newUser
-    );
+    this.router.post('/signup', this.UserController.newUser);
+
+    this.router.post('/signin', this.UserController.signIn)
 
     //route to get a single user
     this.router.get('/:_id', userAuth, this.UserController.getUser);

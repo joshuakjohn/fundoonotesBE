@@ -1,5 +1,6 @@
 import User from '../models/user.model';
 import { IUser } from '../interfaces/user.interface';
+import { any } from '@hapi/joi';
 
 class UserService {
 
@@ -40,6 +41,27 @@ class UserService {
     const data = await User.findById(_id);
     return data;
   };
+
+  public emailCheck = async(elem: string) => {
+    const res = await User.findOne({email: elem});
+    if(res){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  public userSignin = async (email: string, password: string) => {
+    const res = await User.findOne({email: email, password: password});
+    if(res){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 }
 
 export default UserService;
