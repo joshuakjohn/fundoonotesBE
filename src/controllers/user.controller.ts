@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import HttpStatus from 'http-status-codes';
 import userService from '../services/user.service';
+import dotenv from 'dotenv'
+dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -23,7 +25,10 @@ class UserController {
   public signIn = async (req: Request, res:Response) => {
     try{
       let login = await this.UserService.userSignin(req.body.email, req.body.password)
-      res.send(login);
+      res.json({
+        Login: login,
+        Secret_Token: process.env.SECRET_TOKEN
+      });
     }catch(error){
       res.status(HttpStatus.UNAUTHORIZED).send("Invalid email or password");
     }
