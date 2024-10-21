@@ -26,11 +26,10 @@ class UserController {
     try{
       let login = await this.UserService.userSignin(req.body.email, req.body.password)
       res.json({
-        Login: login,
-        Secret_Token: process.env.SECRET_TOKEN
+        Login: login
       });
     }catch(error){
-      res.status(HttpStatus.UNAUTHORIZED).send("Invalid email or password");
+      res.status(HttpStatus.UNAUTHORIZED).send(error);
     }
   }
 }

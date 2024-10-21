@@ -1,6 +1,7 @@
 import User from '../models/user.model';
 import { IUser } from '../interfaces/user.interface';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 
 class UserService {
@@ -36,11 +37,20 @@ class UserService {
   public userSignin = async (email: string, password: string) => {
 
     const res = await User.findOne({email: email});
+    if (!res) {
+      throw new Error("Invalid email or password"); // User not found
+    }
     const match = await bcrypt.compare(password, res.password);
     if(match){
-      return "Login Successfull";
+      const token = jwt.sign({ id: res._id, email: res.email }, process.env.SECRET_TOKEN);
+      return {
+        login: "Login Successfull",
+        token: token
+      }
+      
     }
     else{
+      console.log(res)
       throw new Error("invalid email or password");
     }
   }
