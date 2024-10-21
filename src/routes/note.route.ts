@@ -20,6 +20,8 @@ class NoteRoutes {
     this.router.get('/viewbyid/:id', userAuth, this.NoteController.viewNoteById);
     this.router.put('/update/:id', userAuth, this.NoteController.updateNote);
     this.router.delete('/delete/:id', userAuth, this.NoteController.deleteNote);
+    this.router.get('/viewall', userAuth, this.NoteController.viewAllNote);
+
 
   };
 

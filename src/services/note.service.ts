@@ -1,5 +1,6 @@
 import { INote } from "../interfaces/note.interface";
 import note from "../models/note.model";
+import { Types } from 'mongoose';
 
 class NoteServices{
     public createNote = async (body: INote): Promise<INote> => {
@@ -33,6 +34,14 @@ class NoteServices{
             return note.findByIdAndDelete({_id: id})
         }catch(error){
             throw new Error("cannot find by id and delete: "+error)
+        }
+    }
+
+    public viewAll = async (id: string) => {
+        try{
+            return note.find({createdBy: id})
+        }catch(error){
+            throw new Error("cannot find: "+error)
         }
     }
 }

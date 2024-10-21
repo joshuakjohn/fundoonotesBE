@@ -56,6 +56,17 @@ class NoteController {
     }
   }
 
+  public viewAllNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try{
+        res.status(HttpStatus.CREATED).json({
+            code: HttpStatus.CREATED,
+            data: await this.NoteService.viewAll(req.body.createdBy)
+        });
+    }catch(error){
+        next(error);
+    }
+  }
+
 }
 
 export default NoteController;

@@ -27,9 +27,10 @@ export const userAuth = async (
       };
     bearerToken = bearerToken.split(' ')[1];
 
-    const { user }: any = await jwt.verify(bearerToken, process.env.SECRET_TOKEN);
-    res.locals.user = user;
-    res.locals.token = bearerToken;
+    const { id }: any = await jwt.verify(bearerToken, process.env.SECRET_TOKEN);
+    req.body.createdBy = id;
+    //res.locals.user = user;
+    //res.locals.token = bearerToken;
     next();
   } catch (error) {
     next(error);
