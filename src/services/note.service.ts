@@ -1,6 +1,5 @@
 import { INote } from "../interfaces/note.interface";
 import note from "../models/note.model";
-import { Types } from 'mongoose';
 
 class NoteServices{
     public createNote = async (body: INote): Promise<INote> => {
@@ -29,13 +28,34 @@ class NoteServices{
         }
     }
 
+    public trashNote = async (id: string) => {
+        const doc: INote = await note.findOne({_id: id});
+        if(doc.isTrash === false){
+            return await note.findByIdAndUpdate(id, {isTrash: true}, {new: true})
+        }else{
+            return note.findByIdAndUpdate(id, {isTrash: false}, {new: true})
+        }
+    }
+
     public deleteNote = async (id: string) => {
         try{
-            return note.findByIdAndDelete({_id: id})
+            const doc: INote = await note.findOne({_id: id, isTrash: true})
+            if(doc)
+                return note.findByIdAndDelete({_id: id})
+            else
+                throw new Error("Nothing in trash with given id")
         }catch(error){
             throw new Error("cannot find by id and delete: "+error)
         }
     }
+
+    // public restoreNote = async (id: string) => {
+    //     try{
+    //         return note.updateOne({_id: id}, {$set: {isTrash: false}})
+    //     }catch(error){
+    //         throw new Error("cannot find by id and restore: "+error)
+    //     }
+    // }
 
     public viewAll = async (id: string) => {
         try{
@@ -43,6 +63,15 @@ class NoteServices{
         }catch(error){
             throw new Error("cannot find: "+error)
         }
+    }
+
+    public archiveNote = async (id: string): Promise<any> => {
+        const doc: INote = await note.findOne({_id: id});
+        if(doc.isArchive === false){
+            return await note.findByIdAndUpdate(id, {isArchive: true}, {new: true})
+        }else{
+            return note.findByIdAndUpdate(id, {isArchive: false}, {new: true})
+        }       
     }
 }
 

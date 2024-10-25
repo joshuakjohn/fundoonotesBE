@@ -15,7 +15,6 @@ const routes = (): IRouter => {
   });
   router.use('/users', new userRoute().getRoutes());
   router.use('/notes', new noteRoutes().getRoutes())
-
   return router;
 };
 

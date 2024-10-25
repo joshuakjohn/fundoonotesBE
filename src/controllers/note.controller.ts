@@ -5,11 +5,11 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
-import { http } from 'winston';
 
 class NoteController {
   public NoteService = new noteService();
 
+  //creating a new note
   public newNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try { 
       const data = await this.NoteService.createNote(req.body);
@@ -23,6 +23,7 @@ class NoteController {
     }
   };
 
+  //view note by noteid
   public viewNoteById = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try{
         res.status(HttpStatus.CREATED).json({
@@ -34,6 +35,7 @@ class NoteController {
     }
   }
   
+  //update note by noteid
   public updateNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try{
         res.status(HttpStatus.CREATED).json({
@@ -45,6 +47,19 @@ class NoteController {
     }
   }
 
+  //trash or untrash note
+  public trashNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try{
+        res.status(HttpStatus.CREATED).json({
+            code: HttpStatus.CREATED,
+            data: await this.NoteService.trashNote(req.params.id)
+        });
+    }catch(error){
+        next(error);
+    }
+  }
+
+  //permenently delete a note
   public deleteNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try{
         res.status(HttpStatus.CREATED).json({
@@ -56,11 +71,35 @@ class NoteController {
     }
   }
 
+  // public restoreNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  //   try{
+  //       res.status(HttpStatus.CREATED).json({
+  //           code: HttpStatus.CREATED,
+  //           data: await this.NoteService.restoreNote(req.params.id)
+  //       });
+  //   }catch(error){
+  //       next(error);
+  //   }
+  // }
+
+  //view all notes created by a specific user
   public viewAllNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
             data: await this.NoteService.viewAll(req.body.createdBy)
+        });
+    }catch(error){
+        next(error);
+    }
+  }
+
+  //archive or unarchive a note
+  public archiveNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try{
+        res.status(HttpStatus.CREATED).json({
+            code: HttpStatus.CREATED,
+            data: await this.NoteService.archiveNote(req.params.id)
         });
     }catch(error){
         next(error);

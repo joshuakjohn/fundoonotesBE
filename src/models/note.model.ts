@@ -19,16 +19,18 @@ const noteSchema = new Schema({
     },
     isArchive:{
         type: Boolean,
-        required: true
+        //required: true
+        default: false
     }, 
     isTrash:{
         type: Boolean,
-        required: true
+        //required: true
+        default: false
     }, 
     createdBy:{
         type: ObjectId,
         ref: 'Note',
-        required: true
+        //required: true
     } 
 })
 

@@ -29,7 +29,7 @@ class UserController {
         Login: login
       });
     }catch(error){
-      res.status(HttpStatus.UNAUTHORIZED).send(error);
+      res.status(HttpStatus.UNAUTHORIZED).send(error.message);
     }
   }
 }
