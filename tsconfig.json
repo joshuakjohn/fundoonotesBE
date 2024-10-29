@@ -4,12 +4,15 @@
     "module": "commonjs",
     "allowJs": true,
     "outDir": "./build",
-    "rootDir": "./src",
+    "rootDir": ".",
     "esModuleInterop": true,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/tests"]
+  "include": [
+    "src/**/*",
+    "tests/**/*" // Include the tests directory here
+  ],
+  "exclude": ["node_modules"]
 }

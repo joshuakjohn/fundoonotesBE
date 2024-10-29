@@ -12,7 +12,7 @@ class NoteController {
   //creating a new note
   public newNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try { 
-      const data = await this.NoteService.createNote(req.body);
+      const data = await this.NoteService.createNote(req.body, res.locals.id);
       res.status(HttpStatus.CREATED).json({
         code: HttpStatus.CREATED,
         data: data,
@@ -40,7 +40,8 @@ class NoteController {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.updateNote(req.params.id, req.body)
+            data: await this.NoteService.updateNote(req.params.id, req.body),
+            message: "Note updated successfully"
         });
     }catch(error){
         next(error);
@@ -52,7 +53,7 @@ class NoteController {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.trashNote(req.params.id)
+            data: await this.NoteService.trashNote(req.params.id),
         });
     }catch(error){
         next(error);
@@ -62,9 +63,10 @@ class NoteController {
   //permenently delete a note
   public deleteNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try{
+        await this.NoteService.deleteNote(req.params.id)
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.deleteNote(req.params.id)
+            message: "Deleted successfully" 
         });
     }catch(error){
         next(error);
@@ -87,7 +89,7 @@ class NoteController {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.viewAll(req.body.createdBy)
+            data: await this.NoteService.viewAll(res.locals.id)
         });
     }catch(error){
         next(error);

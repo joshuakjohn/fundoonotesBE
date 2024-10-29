@@ -2,8 +2,9 @@ import { INote } from "../interfaces/note.interface";
 import note from "../models/note.model";
 
 class NoteServices{
-    public createNote = async (body: INote): Promise<INote> => {
+    public createNote = async (body: INote, userId: any): Promise<INote> => {
         try{
+            body.createdBy = userId;
             const data = await note.create(body);
             return data;
 
@@ -31,9 +32,13 @@ class NoteServices{
     public trashNote = async (id: string) => {
         const doc: INote = await note.findOne({_id: id});
         if(doc.isTrash === false){
-            return await note.findByIdAndUpdate(id, {isTrash: true}, {new: true})
+            return {data: await note.findByIdAndUpdate(id, {isTrash: true}, {new: true}),
+                    message: "Note trashed successfully"
+                }
         }else{
-            return note.findByIdAndUpdate(id, {isTrash: false}, {new: true})
+            return {data: await note.findByIdAndUpdate(id, {isTrash: false}, {new: true}),
+                    message: "Note untrashed successfully"
+                }
         }
     }
 
@@ -41,7 +46,7 @@ class NoteServices{
         try{
             const doc: INote = await note.findOne({_id: id, isTrash: true})
             if(doc)
-                return note.findByIdAndDelete({_id: id})
+                note.findByIdAndDelete({_id: id})
             else
                 throw new Error("Nothing in trash with given id")
         }catch(error){
@@ -68,9 +73,13 @@ class NoteServices{
     public archiveNote = async (id: string): Promise<any> => {
         const doc: INote = await note.findOne({_id: id});
         if(doc.isArchive === false){
-            return await note.findByIdAndUpdate(id, {isArchive: true}, {new: true})
+            return {data: await note.findByIdAndUpdate(id, {isArchive: true}, {new: true}),
+                    message: "Note archived successfully"
+                }
         }else{
-            return note.findByIdAndUpdate(id, {isArchive: false}, {new: true})
+            return {data: await note.findByIdAndUpdate(id, {isArchive: false}, {new: true}),
+                    message: "Note unarchived successfully"
+                }
         }       
     }
 }

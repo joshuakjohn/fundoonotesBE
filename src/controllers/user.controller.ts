@@ -25,13 +25,34 @@ class UserController {
   public signIn = async (req: Request, res:Response) => {
     try{
       let login = await this.UserService.userSignin(req.body.email, req.body.password)
-      res.json({
-        Login: login
-      });
+      res.json(login);
     }catch(error){
+      console.log(error.message)
       res.status(HttpStatus.UNAUTHORIZED).send(error.message);
     }
   }
+
+  public forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try { 
+      await this.UserService.forgotPassword(req.body.email);
+      res.status(HttpStatus.CREATED).send("Reset password token sent to registered email id");
+    } catch (error) {
+        next(error);
+    }
+  };
+
+  public resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+      await this.UserService.resetPassword(req.body, res.locals.id);
+
+      res.status(HttpStatus.OK).json({
+        code: HttpStatus.OK,
+        message: 'Password reset successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default UserController;

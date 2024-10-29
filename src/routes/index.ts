@@ -3,6 +3,8 @@ const router = express.Router();
 
 import userRoute from './user.route';
 import noteRoutes from './note.route';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger/openapi.json';
 
 /**
  * Function contains Application routes
@@ -15,6 +17,7 @@ const routes = (): IRouter => {
   });
   router.use('/users', new userRoute().getRoutes());
   router.use('/notes', new noteRoutes().getRoutes())
+  router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   return router;
 };
 

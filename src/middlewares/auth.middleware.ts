@@ -13,26 +13,30 @@ dotenv.config();
  * @param {Object} res
  * @param {Function} next
  */
-export const userAuth = async (
+const auth = (secret_token: string) => {
+  return async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
-  try {
-    let bearerToken = req.header('Authorization');
-    if (!bearerToken)
-      throw {
-        code: HttpStatus.BAD_REQUEST,
-        message: 'Authorization token is required'
-      };
-    bearerToken = bearerToken.split(' ')[1];
+  ): Promise<void> => {
+    try {
+      let bearerToken = req.header('Authorization');
+      if (!bearerToken)
+        throw {
+          code: HttpStatus.BAD_REQUEST,
+          message: 'Authorization token is required'
+        };
+      bearerToken = bearerToken.split(' ')[1];
+      const { userId }: any = await jwt.verify(bearerToken, secret_token);
+      res.locals.id = userId;
+      //res.locals.token = bearerToken;
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+}
 
-    const { id }: any = await jwt.verify(bearerToken, process.env.SECRET_TOKEN);
-    req.body.createdBy = id;
-    //res.locals.user = user;
-    //res.locals.token = bearerToken;
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+export const userAuth = auth(process.env.SECRET_TOKEN);
+
+export const resetPasswordAuth = auth(process.env.SECRET_TOKEN2)

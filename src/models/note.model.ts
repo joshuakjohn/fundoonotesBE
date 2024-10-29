@@ -1,4 +1,3 @@
-import { required } from '@hapi/joi';
 import { INote } from '../interfaces/note.interface';
 import { Types, model, Schema } from 'mongoose';
 const ObjectId = Types.ObjectId;
@@ -32,6 +31,10 @@ const noteSchema = new Schema({
         ref: 'Note',
         //required: true
     } 
-})
+},
+{
+    timestamps: true
+}
+)
 
 export default model<INote>('Note', noteSchema); 
