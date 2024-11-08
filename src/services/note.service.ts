@@ -1,5 +1,7 @@
 import { INote } from "../interfaces/note.interface";
 import note from "../models/note.model";
+import redisClient from "../config/redis";
+
 
 class NoteServices{
     public createNote = async (body: INote, userId: any): Promise<INote> => {
@@ -15,22 +17,25 @@ class NoteServices{
 
     public getNoteById = async (id: string) => {
         try{
-            return await note.findById({_id: id})
+            const res = await note.findById({_id: id})
+            return res
         }catch(error){
             throw new Error("cannot find by id: "+error)
         }
     }
 
-    public updateNote = async (id: string, data: any) => {
+    public updateNote = async (id: string, data: any, userID: any) => {
         try{
+            redisClient.del(`notes:${userID}`)
             return note.findByIdAndUpdate({_id: id}, data, {new: true})
         }catch(error){
             throw new Error("cannot find by id and update: "+error)
         }
     }
 
-    public trashNote = async (id: string) => {
+    public trashNote = async (id: string, userID: any) => {
         const doc: INote = await note.findOne({_id: id});
+        redisClient.del(`notes:${userID}`)
         if(doc.isTrash === false){
             return {data: await note.findByIdAndUpdate(id, {isTrash: true}, {new: true}),
                     message: "Note trashed successfully"
@@ -64,14 +69,18 @@ class NoteServices{
 
     public viewAll = async (id: string) => {
         try{
-            return note.find({createdBy: id})
+            const res = await note.find({createdBy: id, isTrash: false, isArchive: false});
+            await redisClient.setEx(`notes:${id}`, 3600, JSON.stringify(res));
+            console.log("from db")
+            return res;
         }catch(error){
             throw new Error("cannot find: "+error)
         }
     }
 
-    public archiveNote = async (id: string): Promise<any> => {
+    public archiveNote = async (id: string, userID: any): Promise<any> => {
         const doc: INote = await note.findOne({_id: id});
+        redisClient.del(`notes:${userID}`)
         if(doc.isArchive === false){
             return {data: await note.findByIdAndUpdate(id, {isArchive: true}, {new: true}),
                     message: "Note archived successfully"

@@ -40,7 +40,7 @@ class NoteController {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.updateNote(req.params.id, req.body),
+            data: await this.NoteService.updateNote(req.params.id, req.body, res.locals.id),
             message: "Note updated successfully"
         });
     }catch(error){
@@ -53,7 +53,7 @@ class NoteController {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.trashNote(req.params.id),
+            data: await this.NoteService.trashNote(req.params.id, res.locals.id),
         });
     }catch(error){
         next(error);
@@ -101,7 +101,7 @@ class NoteController {
     try{
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
-            data: await this.NoteService.archiveNote(req.params.id)
+            data: await this.NoteService.archiveNote(req.params.id, res.locals.id)
         });
     }catch(error){
         next(error);
