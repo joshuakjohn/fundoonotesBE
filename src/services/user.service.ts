@@ -3,6 +3,7 @@ import { IUser } from '../interfaces/user.interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/user.util';
+import rabbitmq from '../utils/rabbitmq';
 
 
 class UserService {
@@ -20,6 +21,7 @@ class UserService {
           throw new Error("Error occured in hash: "+err);
         }
         const data = await User.create(body);
+        await rabbitmq.sendToQueue('userRegistrationQueue', data)
         return data;
       }
       else{
