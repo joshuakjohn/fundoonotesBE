@@ -59,14 +59,6 @@ class NoteServices{
         }
     }
 
-    // public restoreNote = async (id: string) => {
-    //     try{
-    //         return note.updateOne({_id: id}, {$set: {isTrash: false}})
-    //     }catch(error){
-    //         throw new Error("cannot find by id and restore: "+error)
-    //     }
-    // }
-
     public viewAll = async (id: string) => {
         try{
             const res = await note.find({createdBy: id, isTrash: false, isArchive: false});

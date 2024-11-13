@@ -29,7 +29,6 @@ const auth = (secret_token: string) => {
       bearerToken = bearerToken.split(' ')[1];
       const { userId }: any = await jwt.verify(bearerToken, secret_token);
       res.locals.id = userId;
-      //res.locals.token = bearerToken;
       next();
     } catch (error) {
       next(error);

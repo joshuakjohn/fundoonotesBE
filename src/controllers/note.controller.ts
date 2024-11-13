@@ -73,16 +73,6 @@ class NoteController {
     }
   }
 
-  // public restoreNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-  //   try{
-  //       res.status(HttpStatus.CREATED).json({
-  //           code: HttpStatus.CREATED,
-  //           data: await this.NoteService.restoreNote(req.params.id)
-  //       });
-  //   }catch(error){
-  //       next(error);
-  //   }
-  // }
 
   //view all notes created by a specific user
   public viewAllNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
