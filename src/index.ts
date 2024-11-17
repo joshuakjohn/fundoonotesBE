@@ -1,6 +1,4 @@
 import dotenv from 'dotenv';
-dotenv.config();
-
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,8 +7,9 @@ import routes from './routes';
 import Database from './config/database';
 import ErrorHandler from './middlewares/error.middleware';
 import Logger from './config/logger';
-
 import morgan from 'morgan';
+
+dotenv.config();
 
 class App {
   public app: Application;

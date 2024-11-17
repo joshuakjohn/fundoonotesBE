@@ -16,15 +16,26 @@ class NoteRoutes {
 
   private routes = () => {
 
+    //route to view all notes
+    this.router.get('', userAuth, redisGetNotes, this.NoteController.viewAllNote);
+
     //route to create a new note
-    this.router.post('/create', this.NoteValidator.newNote, userAuth, this.NoteController.newNote);
-    this.router.get('/viewbyid/:id', userAuth, redisGetNotes, this.NoteController.viewNoteById);
-    this.router.put('/update/:id', userAuth, this.NoteController.updateNote);
-    this.router.delete('/delete/:id', userAuth, this.NoteController.deleteNote);
-    this.router.delete('/trash/:id', userAuth, this.NoteController.trashNote);
-    this.router.get('/viewall', userAuth, redisGetNotes, this.NoteController.viewAllNote);
-    this.router.patch('/archive/:id', userAuth, this.NoteController.archiveNote);
-    //this.router.get('/restore/:id', userAuth, this.NoteController.restoreNote);
+    this.router.post('', this.NoteValidator.newNote, userAuth, this.NoteController.newNote);
+
+    //route to view a note by id
+    this.router.get('/:id', userAuth, this.NoteController.viewNoteById);
+
+    //route to update a note by id
+    this.router.put('/:id', userAuth, this.NoteController.updateNote);
+
+    //route to delete a note by id
+    this.router.delete('/:id', userAuth, this.NoteController.deleteNote);
+
+    //route to trash a note by id
+    this.router.delete('/:id/trash', userAuth, this.NoteController.trashNote);
+
+    //route to archive a note by id
+    this.router.patch('/:id', userAuth, this.NoteController.archiveNote);
 
 
   };
