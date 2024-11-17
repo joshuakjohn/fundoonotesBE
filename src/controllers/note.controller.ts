@@ -63,7 +63,7 @@ class NoteController {
   //permenently delete a note
   public deleteNote = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try{
-        await this.NoteService.deleteNote(req.params.id)
+        await this.NoteService.deleteNote(req.params.id, res.locals.id)
         res.status(HttpStatus.CREATED).json({
             code: HttpStatus.CREATED,
             message: "Deleted successfully" 

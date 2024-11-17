@@ -9,7 +9,7 @@ import rabbitmq from '../utils/rabbitmq';
 class UserService {
   
   //create new user
-  public newUser = async (body: IUser): Promise<IUser> => {
+  public newUser = async (body: IUser): Promise<void> => {
     const saltRounds = 10;
     const myPassword = body.password;
     try{
@@ -22,7 +22,6 @@ class UserService {
         }
         const data = await User.create(body);
         await rabbitmq.sendToQueue('userRegistrationQueue', data)
-        return data;
       }
       else{
         throw new Error("User already exist");
@@ -43,7 +42,9 @@ class UserService {
     if(match){
       const token = jwt.sign({ userId: res._id, email: res.email }, process.env.SECRET_TOKEN);
       return {
-        login: "Login Successful",
+        message: "Login Successful",
+        fname: res.fname,
+        lname: res.lname,
         token: token
       }   
     }
